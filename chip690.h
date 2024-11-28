@@ -113,9 +113,8 @@ uint8_t *lsb_send(uint8_t val)
     uint8_t buff[4];
     for (uint8_t i = 0; i < 4; i++)
     {
-        buff[i] = ((value & cnt) >> i);
+        mxbuff[i] = ((value & cnt) >> i);
         cnt = (cnt << 1);
-        mxbuff[i] = buff[i];
     }
     return mxbuff;
 }

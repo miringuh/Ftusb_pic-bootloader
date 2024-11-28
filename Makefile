@@ -7,7 +7,7 @@ make:
 #	make clean
 #	FTDI----
 	clear
-	gcc -o ${FILE}.o ${FILE}.c /usr/lib/x86_64-linux-gnu/libftdi1.so	
+	sudo gcc -o ${FILE}.o ${FILE}.c /usr/lib/x86_64-linux-gnu/libftdi1.so	
 #	USB-----
 #	gcc -o ${FILE}.o ${FILE}.c /usr/lib/x86_64-linux-gnu/libusb-1.0.so 
 	./${FILE}.o

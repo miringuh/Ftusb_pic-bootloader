@@ -9,7 +9,7 @@
 #define __FTUSB
 unsigned char rddpin[1];
 //
-uint8_t char2hex2(unsigned char buff)
+uint8_t ftchar2hex2(unsigned char buff)
 {
     uint8_t u;
     if (buff >= 48 && buff <= 57) // 0-9
@@ -140,7 +140,7 @@ int ft_bitbang(unsigned char *mess)
     strcpy(buf, mess);
     for (uint8_t i = 0; i < strlen(mess); i++)
     {
-        buf2[i] = char2hex2(buf[i]);
+        buf2[i] = ftchar2hex2(buf[i]);
     }
     for (int i = 0; i <= strlen(mess); i++)
     {
@@ -171,6 +171,10 @@ void file_read(unsigned char *filename)
     fd = fopen(filename, "r");
     // fflush(fd);
     fread(buff, sizeof(buff), 1, fd);
+    for (uint16_t i = 0; i < strlen(buff); i++)
+    {
+        printf("%c ", buff[i]);
+    }
     ft_usart(buff);
     fclose(fd);
 }

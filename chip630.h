@@ -29,11 +29,11 @@
 #define tset0 150 // 100 ns min-> clk/data b4 mclr^
 #define thld0 2   // 2 us max-> delay b4 vdd^
 
-#define tset1 10    // 100 ns min-> datain b4 clk-down
+#define tset1 2    // 100 ns min-> datain b4 clk-down
 #define thld1 tset1 // 100 ns min->data hold after clk-down
-
 #define tdly2 tset1 // 1 us min->clk-delay up/down data<>comm
-#define tdly1 tset1 // 1 us min->delay for data<>comm
+
+#define tdly1 10 // 1 us min->delay for data<>comm
 #define tdly3 tset1 // 80 ns max->rd-clk^ to data-out
 #define tera 6000   // 6 ms max->erase cycl
 #define tprog1 6000 // 3 ms min->prog-int cycle time/delay
@@ -141,11 +141,11 @@ uint8_t *msb_send(uint8_t val)
 }
 uint8_t icsp_cycle(struct ftdi_context *ftdi, uint8_t byte)
 {
-    uint8_t cnt = 1;
+    lsb_send(byte);
     for (uint8_t i = 0; i < 4; i++)
     {
-        mxbuff[i] = ((byte & cnt) >> i);
-        cnt = (cnt << 1);
+        // mxbuff[i] = ((byte & cnt) >> i);
+        // cnt = (cnt << 1);
         if (auto_cnt == 0)
         {
             ftdi_write_data(ftdi, "M", 1); // clk
@@ -254,10 +254,10 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             printf("%d ", rdVal);
             if (mem_buff[auto_cnt] != rdVal)
             {
-                // ftdi_write_data(ftdi, "P", 1); // OFF
-                // usleep(tset1);
-                // printf("e ");
-                // exit(0);
+                ftdi_write_data(ftdi, "P", 1); // OFF
+                usleep(tset1);
+                printf("ERROR \n");
+                exit(0);
             }
             auto_cnt++;
             break;
@@ -355,7 +355,7 @@ uint8_t icsp_Rd_file(unsigned char *filename)
         icsp(ftdi, buff[i]);
     }
     // ftdi_write_data(ftdi, "4", 1);
-    printf("END !\n");
+    // printf("END !\n");
     fflush(fd);
     fclose(fd);
 

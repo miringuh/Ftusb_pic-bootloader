@@ -24,16 +24,15 @@
 #define thld0 2   // 2 us max-> delay b4 vdd^
 
 #define tset1 4     // 100 ns min-> datain b4 clk-down
-#define thld1 tset1 // 100 ns min->data hold after clk-down
+#define thld1 40 // 100 ns min->data hold after clk-down
 
-#define tdly2 tset1 // 1 us min->clk-delay up/down data<>comm
-#define tdly1 tset1 // 1 us min->delay for data<>comm
-#define tdly3 tset1 // 80 ns max->rd-clk^ to data-out
+#define tdly2 40 // 1 us min->clk-delay up/down data<>comm
+#define tdly1 40 // 1 us min->delay for data<>comm
+#define tdly3 40 // 80 ns max->rd-clk^ to data-out
 #define tera 6000   // 6 ms max->erase cycl
-#define tprog1 6000 // 3 ms min->prog-int cycle time/delay
-#define tprog2 6000 // 3 ms min->prog-ext cycle time/delay
+#define tprog1 4000 // 3 ms min->prog-int cycle time/delay
+#define tprog2 4000 // 3 ms min->prog-ext cycle time/delay
 #define tdis 50     // 100 ns min
-
 /*
 P-00 00 off (stop)
 O-11 11 hold
@@ -71,16 +70,7 @@ uint8_t char2hex2(unsigned char buff)
         u = buff - 55;
         return u;
     }
-    // if (buff >= 71 && buff <= 90) // G-Z
-    // {
-    //     u = buff - 55;
-    //     return u;
-    // }
-    // if (buff >= 97 && buff <= 122) // a-z
-    // {
-    //     u = buff - 61;
-    //     return u;
-    // }
+   
 }
 void Start(struct ftdi_context *ftdi)
 {
@@ -135,22 +125,22 @@ uint8_t *msb_send(uint8_t val)
 }
 uint8_t icsp_cycle(struct ftdi_context *ftdi, uint8_t byte)
 {
-    uint8_t cnt = 1;
+    lsb_send(byte);
     for (uint8_t i = 0; i < 4; i++)
     {
         if (auto_cnt == 0)
         {
             ftdi_write_data(ftdi, clk, 1); // clk
-            usleep(dely);
+            usleep(thld0);
             ftdi_write_data(ftdi, no_clk, 1); // no-clk
-            usleep(dely);
+            usleep(thld0);
         }
         if (auto_cnt == 14)
         {
             ftdi_write_data(ftdi, clk, 1); // clk
-            usleep(dely);
+            usleep(thld0);
             ftdi_write_data(ftdi, no_clk, 1); // no-clk
-            usleep(dely);
+            usleep(thld0);
             auto_cnt = 0;
             auto_mem_cnt = 0;
             return 0;
@@ -158,20 +148,20 @@ uint8_t icsp_cycle(struct ftdi_context *ftdi, uint8_t byte)
         if (mxbuff[i] == 1)
         {
             ftdi_write_data(ftdi, clk, 1); // clk
-            usleep(dely);
+            usleep(thld0);
             ftdi_write_data(ftdi, hold, 1); // data+clk
-            usleep(dely);
+            usleep(thld0);
             ftdi_write_data(ftdi, data, 1); // hold-data
-            usleep(dely);
+            usleep(thld0);
             mem_buff[auto_mem_cnt] = 1;
             auto_mem_cnt++;
         }
         if (mxbuff[i] == 0)
         {
             ftdi_write_data(ftdi, clk, 1); // clk
-            usleep(dely);
+            usleep(thld0);
             ftdi_write_data(ftdi, no_clk, 1); // no-clk
-            usleep(dely);
+            usleep(thld0);
             mem_buff[auto_mem_cnt] = 0;
             auto_mem_cnt++;
         }
@@ -241,13 +231,13 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             ftdi_write_data(ftdi, no_clk, 1); // no-clk
             usleep(tset1);
             rdVal = (uint8_t)((rdpin[0] & 0x02) >> 1);
-            printf("%d ", rdVal);
+            printf("%d ", mem_buff[auto_cnt]);
             if (mem_buff[auto_cnt] != rdVal)
             {
-                // ftdi_write_data(ftdi, "P", 1); // OFF
-                // usleep(tset1);
-                // printf("Error!!");
-                // exit(0);
+                ftdi_write_data(ftdi, "P", 1); // OFF
+                usleep(tset1);
+                printf("Error!!");
+                exit(0);
             }
             auto_cnt++;
             break;
@@ -255,6 +245,7 @@ uint8_t read_chip(struct ftdi_context *ftdi)
     }
 
 }
+//
 uint8_t icsp(struct ftdi_context *ftdi, uint8_t val)
 {
     switch (val)
@@ -308,6 +299,7 @@ uint8_t icsp(struct ftdi_context *ftdi, uint8_t val)
         break;
     }
 }
+
 uint8_t icsp_Rd_file(unsigned char *filename)
 {
     struct ftdi_context *ftdi;
@@ -339,7 +331,7 @@ uint8_t icsp_Rd_file(unsigned char *filename)
     {
         icsp(ftdi, buff[i]);
     }
-    // ftdi_write_data(ftdi, "4", 1);
+    ftdi_write_data(ftdi, "4", 1);
     printf("END !\n");
     fflush(fd);
     fclose(fd);
