@@ -2,6 +2,7 @@
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "*.embeddedhtml": "html",
-        "chip628a.h": "c"
+        "chip628a.h": "c",
+        "cstdint": "cpp"
     }
 }

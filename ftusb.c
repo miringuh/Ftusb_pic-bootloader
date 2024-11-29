@@ -7,8 +7,8 @@
 // #include "chip4550.h"
 // #include "chip690.h"
 // #include "chip628a.h"
-#include "chip630.h"
-// #include "chipc84.h"
+// #include "chip630.h"
+#include "chipc84.h"
 
 void addressx(uint32_t addr)
 {
@@ -63,6 +63,6 @@ int main(int argc, char **argv)
     // icsp_Rd_file("/home/george/devs/P690/icsp.txt");
     // icsp_Rd_file("/home/george/devs/Pic18F4550/headers/test.txt");
     // icsp_Rd_file("/home/george/devs/Pic628a/icsp.txt");
-    icsp_Rd_file("/home/george/devs/P630/icsp.txt");
-    // icsp_Rd_file("/home/george/devs/P16C84/icsp.txt");
+    // icsp_Rd_file("/home/george/devs/P630/icsp.txt");
+    icsp_Rd_file("/home/george/devs/P16C84/icsp.txt");
 }

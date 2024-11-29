@@ -22,7 +22,7 @@
 #define tprog2 20000         // 3 ms min->prog-ext cycle time/deL
 #define tdis 50              // 100 ns min
 
-#define tset0 10    // min 100ns
+#define tset0 40    // min 100ns
 #define thld0 tset0     // 2 us max-> delay b4 vdd^
 #define tset1 tset0     // 100 ns min-> datain b4 clk-down
 #define thld1 tset1 // 100 ns min->data hold after clk-down
@@ -86,7 +86,7 @@ void Stop(struct ftdi_context *ftdi)
     printf("END !");
 }
 
-uint8_t *lsb_send(uint8_t val)
+uint8_t *lsb_send(uint8_t val)//mxbuff
 {
     uint8_t cnt = 1;
     for (uint8_t i = 0; i < 4; i++)
@@ -205,7 +205,7 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             usleep(tset1);
             ftdi_write_data(ftdi, "L", 1);
             usleep(tset1);
-            printf("0  ");
+            // printf(" ");
             break;
         case 8:
             printf(" ");
@@ -215,7 +215,7 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             usleep(tset1);
             ftdi_write_data(ftdi, "L", 1);
             usleep(tset1);
-            printf(" 0\n");
+            printf("\n");
             auto_cnt = 0;
             return 0;
             break;
@@ -226,6 +226,7 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             usleep(tset1);
             ftdi_write_data(ftdi, "L", 1); // no-clk
             usleep(tset1);
+            //
             rdVal = (uint8_t)((rdpin[0] & 0x02) >> 1);
             printf("%d ", rdVal);
             if (mem_buff[auto_cnt] != rdVal)
@@ -289,8 +290,7 @@ uint8_t icsp(struct ftdi_context *ftdi, uint8_t val)
         usleep(tera);
         break;
     default:
-        word(ftdi, val);
-        // word(ftdi, char2hex2(val));
+        word(ftdi, char2hex2(val));
         break;
     }
 }
@@ -325,7 +325,7 @@ uint8_t icsp_Rd_file(unsigned char *filename)
     {
         icsp(ftdi, buff[i]);
     }
-    // ftdi_write_data(ftdi, "4", 1);
+    ftdi_write_data(ftdi, "4", 1);
     printf("END !\n");
     fflush(fd);
     fclose(fd);
