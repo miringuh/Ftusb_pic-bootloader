@@ -47,7 +47,7 @@ H-00 01 -0X01 vpp
 #define tprog2 6000    // 3 ms min->prog-ext cycle time/delay
 #define tdis 1      // 100 ns min
 //
-#define dely 4
+#define dely 2
 //
 #define clk "M"    // 1 clk
 #define data "N"   // 2 data
@@ -103,9 +103,9 @@ void Stop(struct ftdi_context *ftdi)
     ftdi_write_data(ftdi, off, 1);
     usleep(70000);
     ftdi_write_data(ftdi, vdd, 1); // vcc
-    usleep(20000);
+    usleep(80000);
 }
-
+//
 uint8_t *lsb_send(uint8_t val)
 {
     uint8_t cnt = 1;
@@ -228,7 +228,6 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             usleep(dely);
             ftdi_write_data(ftdi, no_clk, 1);
             usleep(dely);
-            // auto_cnt++;
             break;
         case 8:
             // printf(" ");
@@ -238,7 +237,7 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             usleep(dely);
             ftdi_write_data(ftdi, no_clk, 1);
             usleep(dely);
-            // printf("\n");
+            printf("\n");
             auto_cnt = 0;
             break;
         default:
@@ -249,7 +248,7 @@ uint8_t read_chip(struct ftdi_context *ftdi)
             ftdi_write_data(ftdi, no_clk, 1); // no-clk
             usleep(dely);
             rdVal = (uint8_t)((rdpin[0] & 0x02) >> 1);
-            // printf("%d ", rdVal);
+            printf("%d ", rdVal);
             if (mem_buff[auto_cnt] != rdVal)
             {
                 ftdi_write_data(ftdi, off, 1); // OFF
@@ -262,7 +261,6 @@ uint8_t read_chip(struct ftdi_context *ftdi)
         }
     }
 }
-
 uint8_t icsp(struct ftdi_context *ftdi, uint8_t val)
 {
     switch (val)

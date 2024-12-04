@@ -5,10 +5,10 @@
 // #include "ftusb.h"
 // #include "ft_spi.h"
 // #include "chip4550.h"
-// #include "chip690.h"
+#include "chip690.h"
 // #include "chip628a.h"
 // #include "chip630.h"
-#include "chipc84.h"
+// #include "chipc84.h"
 
 void addressx(uint32_t addr)
 {
@@ -53,16 +53,10 @@ void swap_address(uint32_t addr)
 
 int main(int argc, char **argv)
 {
-    usleep(100000);
-    // spi_mode_Rd_file("database.txt");
-    // ft_bitbang("cost");
-    // Spi_mode("hello");
-    // ft_usart("0123456789ABCDEF");
-    // write_file("database.txt", "0123456789ABCDEF");
-    // file_read("database.txt");
-    // icsp_Rd_file("/home/george/devs/P690/icsp.txt");
+    usleep(100000); 
+    icsp_Rd_file("/home/george/devs/P690/icsp.txt");
     // icsp_Rd_file("/home/george/devs/Pic18F4550/headers/test.txt");
     // icsp_Rd_file("/home/george/devs/Pic628a/icsp.txt");
     // icsp_Rd_file("/home/george/devs/P630/icsp.txt");
-    icsp_Rd_file("/home/george/devs/P16C84/icsp.txt");
+    // icsp_Rd_file("/home/george/devs/P16C84/icsp.txt");
 }
